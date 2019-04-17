@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <title>Welcome to My app</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+
+      class Form extends React.Component {
+        constructor(props){
+            super(props)
+
+            this.state = {
+              text: ''
+            }
+        } 
+
+
+        //Submit form
+        onSubmit = (e) => {
+            e.preventDefault();
+
+            console.log("submitting---", this.state.text)
+
+            const params = {
+              text: this.state.text
+            }
+
+            //call serverr API
+            axios.post('http://localhost:3030/form', params)
+              .then( (response) => {
+                  if(response){
+                    console.log("responded from server", response.data);
+                  } else {
+                    console.log("could not call the server!!");
+                  }
+              })
+              .catch( err => {
+                  console.log("error calling server", err)
+              });
+
+        }
+
+
+        //Get form inputs
+        onTextChange = (e) => {
+            console.log("Text-->", e.target.value);
+
+            this.setState({
+              text: e.target.value
+            })
+        }
+
+        render() {
+
+            return (
+              <div className="section">
+                  <div class="row">
+                    <div class="column is-offset-3 is-4">
+                        <form onSubmit={this.onSubmit}>
+                          <div class="field">
+                              <label class="label">Username</label>
+                              <div class="control has-icons-left has-icons-right">
+                              <input class="input is-success" 
+                                type="text" 
+                                placeholder="Text input" 
+                                value={this.state.text}
+                                onChange={this.onTextChange} 
+                                name="form"
+                                
+                              />
+                              <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                              </span>
+                              <span class="icon is-small is-right">
+                                <i class="fas fa-check"></i>
+                              </span>
+
+                              <button className="button is-primary" style={{ marginTop: '10px'}}>Submit</button>
+                              </div>
+                          </div>
+                        </form>
+                    </div>
+                  </div>
+              </div>
+            )
+        }
+      }
+
+      ReactDOM.render(
+
+        <Form />,
+        document.getElementById('app')
+      )
+    </script>
+  </body>
+</html>
